@@ -13,6 +13,7 @@ const corsOptions = {
     /^https:\/\/progressive-mass.firebaseapp.com\/*/,
     /^https:\/\/scorecard.progressivemass.com\/*/,
     /^https:\/\/progressive-mass-test.firebaseapp.com\/*/,
+    /^http:\/\/localhost:8000\/*/,
   ],
 }
 
@@ -32,4 +33,4 @@ app.post('/local-legislators', cors(corsOptions), function(req, res) {
     .catch(e => res.status(500).send(e.toString()))
 })
 
-exports.api = functions.https.onRequest(app)
+exports.api = functions.runWith({ secrets: ["GEOCODIO_API_KEY"] }).https.onRequest(app)

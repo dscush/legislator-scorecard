@@ -2,8 +2,8 @@ const axios = require('axios')
 const functions = require('firebase-functions')
 
 const query = `
-query getLocalLegislators($latitude: Float, $longitude: Float) {
-  senator: people(latitude: $latitude, longitude: $longitude, memberOf: "ocd-organization/1a75ab3a-669b-43fe-ac8d-31a2d6923d9a", first: 1) {
+query findLocalLegislators($senateOcdId: String, $houseOcdId: String) {
+  senator: people(divisionId: $senateOcdId, memberOf: "ocd-organization/1a75ab3a-669b-43fe-ac8d-31a2d6923d9a", first: 1) {
     edges {
       node {
         id
@@ -11,7 +11,7 @@ query getLocalLegislators($latitude: Float, $longitude: Float) {
       }
     }
   }
-  representative: people(latitude: $latitude, longitude: $longitude, memberOf: "ocd-organization/ca38ad9c-c3d5-4c4f-bc2f-d885218ed802", first: 1) {
+  representative: people(divisionId: $houseOcdId, memberOf: "ocd-organization/ca38ad9c-c3d5-4c4f-bc2f-d885218ed802", first: 1) {
     edges {
       node {
         id
@@ -22,15 +22,15 @@ query getLocalLegislators($latitude: Float, $longitude: Float) {
 }
 `
 
-function findLocalLegislators(coordinates) {
+function findLocalLegislators(ocdIds) {
   return axios
     .post(
       'https://openstates.org/graphql',
       {
         query,
         variables: {
-          latitude: coordinates.lat,
-          longitude: coordinates.lng,
+          houseOcdId: ocdIds.house,
+          senateOcdId: ocdIds.senate,
         },
       },
       {
