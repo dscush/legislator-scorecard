@@ -16,13 +16,13 @@ function findLocalLegislators(coordinates) {
       httpsAgent,
   }).then(response => {
     memberCodes = {}
-    response.data.districts.forEach(({ Branch, UserMemberCode }) => {
-      if (Branch === 'Senate') {
-        memberCodes.senator = UserMemberCode
-      } else if (Branch === 'House') {
-        memberCodes.representative = UserMemberCode
+    response.data.districts.forEach(({ branch, userMemberCode }) => {
+      if (branch.toLowerCase() === 'senate') {
+        memberCodes.senator = userMemberCode
+      } else if (branch.toLowerCase() === 'house') {
+        memberCodes.representative = userMemberCode
       } else {
-        throw new Error(`Unexpected chamber: ${Branch}`)
+        throw new Error(`Unexpected chamber "${branch}". Member code: ${userMemberCode}, coordinates: ${coordinates.lat}, ${coordinates.lng}`)
       }
     })
     return memberCodes
